@@ -54,7 +54,7 @@ class GameState:
         
         self.teams: dict[str, Team] = {}
         for t in all_team_names:
-            team = Team(name=t, is_user=(t == self.team_name))
+            team = self.team if t == self.team_name else Team(name=t)
             self.teams[t] = team
 
         # Generate Double Round-Robin fixtures
@@ -64,7 +64,9 @@ class GameState:
         n = len(team_list)
         rounds: list[list[tuple[int, Team, Team]]] = []
         for r in range(n - 1):
-            round_fixtures = get_round_fixture(team_list=team_list, r=r)
+            round_fixtures = get_round_fixture(
+                team_list=team_list, r=r, teams=self.teams
+            )
             team_list.insert(1, team_list.pop())
             rounds.append(round_fixtures)
 

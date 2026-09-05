@@ -14,8 +14,9 @@ COPY pyproject.toml pdm.lock ./
 RUN pdm install --check --prod --no-editable
 
 # Copy the rest of your application code
-COPY . .
+COPY app.py main.py ./
+COPY resources/ resources/
 
 
 # Start the NiceGUI application using the installed python environment
-CMD ["pdm", "run", "python", "app.py"]
+CMD ["pdm", "run", "python", "main.py"]

@@ -14,5 +14,8 @@ license = {text = "MIT"}
 [tool.pdm]
 distribution = false
 
-[tool.pdm.scripts]
-dev = "python app.py"
+[tool.pdm.scripts.dev]
+cmd = "python app.py"
+
+[tool.pdm.scripts.prod]
+cmd = "python main.py"

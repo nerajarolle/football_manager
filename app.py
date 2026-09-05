@@ -140,10 +140,10 @@ def play_next_match():
                 )
                 score_home = ui.label("0").classes(
                     "col-1 text-4xl font-bold text-center my-2"
-                )
+                ).props("data-home='score-home'")
                 score_away = ui.label("0").classes(
                     "col-1 text-4xl font-bold text-center my-2"
-                )
+                ).props("data-away='score-away'")
                 ui.label(f"{fixture.away.name}").classes(
                     "col-5 text-2xl font-bold text-emerald-400 mb-2 text-center"
                 )
@@ -202,7 +202,7 @@ def play_next_match():
 
             def play_other_fixtures():
                 for other_fixture in other_fixtures:
-                    simulate_match(other_fixture)
+                    simulate_match(other_fixture, display_result=False)
                     update_fixture_stats(other_fixture, state.teams)
 
             def update_all_fixture_stats(fix: Fixture):
@@ -210,14 +210,19 @@ def play_next_match():
                 fix.played = True
                 update_scorers(fix)
             
-            def simulate_match(fix: Fixture):
+            def simulate_match(fix: Fixture, display_result: bool = True):
                 for _minute in range(1, 91):
-                    simulate_minute(fix)
-                score_home.text = f"{fix.home_score}"
-                score_away.text = f"{fix.away_score}"
-                close_button.enable()
-                start_button.disable()
-                simulate_button.disable()
+                    msg = get_chance_for_event(fix)
+                    if display_result:
+                        update_scorers(fix)
+                        result_label.text = msg
+                if display_result:
+                    minutes_label.text = "90/90 minutes"
+                    score_home.text = f"{fix.home_score}"
+                    score_away.text = f"{fix.away_score}"
+                    close_button.enable()
+                    start_button.disable()
+                    simulate_button.disable()
                 
             
             def handle_simulate_button(fix):
@@ -680,8 +685,8 @@ def dashboard():
 
                 refresh_standings()
 
+def main(port: int = 8000, reload=True):
+    ui.run(title="Football", port=port, reload=reload, storage_secret="alex-storage")
 
 if __name__ in {"__main__", "__mp_main__"}:
-    # Render injects a dynamic $PORT variable, defaulting to 8080 locally
-    port = int(os.environ.get("PORT", 8000))
-    ui.run(title="Football", port=port, reload=False, storage_secret="alex-storage")
+    main()

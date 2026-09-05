@@ -20,18 +20,18 @@ from resources.variables import LOGO_COLORS
 #     return squad
 
 def get_chance_for_event(fixture: Fixture) -> str:
-    print(f"Simulating event for fixture: {fixture.home.name} vs {fixture.away.name}")
+    #print(f"Simulating event for fixture: {fixture.home.name} vs {fixture.away.name}")
     overall1 = fixture.home.overall
     overall2 = fixture.away.overall
     team_diff = abs(overall1 - overall2)
     chance1 = overall1 / (overall1 + overall2)
     _chance2 = overall2 / (overall1 + overall2)
     roll = randint(0, 100) / 100
-    print(f"Roll: {roll}, Team Diff: {team_diff}, Chance1: {chance1}")
+    #print(f"Roll: {roll}, Team Diff: {team_diff}, Chance1: {chance1}")
     is_a_goal = roll + team_diff * 0.001 > 0.95
     if is_a_goal:
         if randint(1, 100) <= chance1 * 100:
-            print(f"Goal for {fixture.home.name}")
+            #print(f"Goal for {fixture.home.name}")
             fixture.home_score += 1
             fixture.stats["home_shots"] += 1
             scorer = get_scorer(fixture.home)
@@ -103,16 +103,21 @@ def get_chance(team: str) -> str:
 
 
 
-def get_round_fixture(team_list: list, r: int) -> list[tuple[int, Team, Team]]:
+def get_round_fixture(
+    team_list: list[str], r: int, teams: dict[str, Team] | None = None
+) -> list[tuple[int, Team, Team]]:
     n = len(team_list)
     round_fixtures: list[tuple[int, Team, Team]] = []
     for i in range(n // 2):
         t1 = team_list[i]
         t2 = team_list[n - 1 - i]
         if i == 0 and r % 2 == 1:
-            round_fixtures.append((r, Team(t2), Team(t1)))
+            home_name, away_name = t2, t1
         else:
-            round_fixtures.append((r, Team(t1), Team(t2)))
+            home_name, away_name = t1, t2
+        if teams is None:
+            teams = {name: Team(name) for name in team_list}
+        round_fixtures.append((r, teams[home_name], teams[away_name]))
     return round_fixtures
 
 def normalize_player_price(price: str) -> int:
