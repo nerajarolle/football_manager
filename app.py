@@ -74,6 +74,9 @@ def main_menu():
             )
 
             def start_new_game():
+                if not manager_input.value:
+                    ui.notify("Manager name is required!", type="negative")
+                    return
                 state.manager_name = manager_input.value
                 tname = (
                     custom_team_input.value
