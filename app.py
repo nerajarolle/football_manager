@@ -1,4 +1,5 @@
 import asyncio
+import os
 from secrets import choice
 
 from nicegui import ui
@@ -681,4 +682,6 @@ def dashboard():
 
 
 if __name__ in {"__main__", "__mp_main__"}:
-    ui.run(title="Alex", port=8000, show=False, storage_secret="alex-storage")
+    # Render injects a dynamic $PORT variable, defaulting to 8080 locally
+    port = int(os.environ.get("PORT", 8000))
+    ui.run(title="Football", port=port, reload=False, storage_secret="alex-storage")

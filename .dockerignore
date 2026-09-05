@@ -1,0 +1,19 @@
+# PDM and Python virtual environments
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# PDM local configuration and build artifacts
+.pdm-build/
+.pdm-plugins/
+pdm.toml
+
+# Git files (Hugging Face doesn't need your local history)
+.git/
+.gitignore
+
+# OS specific files
+.DS_Store
+Thumbs.db
