@@ -1,0 +1,18 @@
+[project]
+name = "football_manager"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Alessandro Ferrante",email = "nerajarolle@gmail.com"},
+]
+dependencies = ["nicegui>=3.16.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0"]
+requires-python = "==3.14.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
+
+[tool.pdm.scripts]
+dev = "python app.py"
