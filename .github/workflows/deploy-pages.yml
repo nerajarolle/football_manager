@@ -24,16 +24,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
       - name: Prepare static site
+        env:
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: |
           mkdir site
           cp index.html site/index.html
           cp pages/game.html site/game.html
           cp pages/game.js site/game.js
-          sed -i 's|href="/game/"|href="/${{ github.event.repository.name }}/game.html"|' site/index.html
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+          base_path="${PAGES_BASE_PATH#/}"
+          if [ -z "$base_path" ]; then
+            game_path="/game.html"
+          else
+            game_path="/${base_path%/}/game.html"
+          fi
+          sed -i "s|href=\"/game/\"|href=\"$game_path\"|" site/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
