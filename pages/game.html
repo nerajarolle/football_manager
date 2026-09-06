@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#071a16" />
+  <title>Football Manager / Static Edition</title>
+  <style>
+    :root { color-scheme: dark; --ink:#eef7f1; --muted:#8fa69a; --mint:#8ee6b2; --night:#071a16; --panel:#0d2921; --panel-2:#12382c; --line:rgba(238,247,241,.13); --danger:#ee806d; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-width:320px; color:var(--ink); background:radial-gradient(circle at 80% 0%, #174d38 0, transparent 38%), linear-gradient(130deg,#071a16,#0a261e 70%,#06130f); font-family:Arial,sans-serif; }
+    button, input, select { font:inherit; }
+    button { cursor:pointer; }
+    .topbar { min-height:78px; padding:18px 4vw; display:flex; align-items:center; gap:32px; border-bottom:1px solid var(--line); background:rgba(7,26,22,.82); }
+    .brand { color:var(--ink); font:700 1.5rem Georgia,serif; text-decoration:none; letter-spacing:.02em; }
+    .brand span { color:var(--mint); }
+    .manager { display:flex; flex-direction:column; gap:3px; flex:1; color:var(--muted); font-size:.75rem; text-transform:uppercase; letter-spacing:.12em; }
+    .manager strong { color:var(--mint); font-size:.88rem; }
+    .header-actions { display:flex; align-items:center; gap:12px; }
+    .budget { color:var(--mint); font-weight:700; }
+    .ghost, .secondary { color:var(--ink); background:transparent; border:1px solid var(--line); padding:10px 14px; }
+    .ghost:hover, .secondary:hover { border-color:var(--mint); }
+    .game-shell { width:min(1180px,calc(100% - 48px)); margin:0 auto; padding:62px 0 80px; }
+    .game-heading, .section-head { display:flex; justify-content:space-between; align-items:end; gap:24px; margin-bottom:38px; }
+    h1, h2, h3, p { margin-top:0; }
+    h1 { margin-bottom:0; font:400 clamp(3rem,7vw,6.4rem)/.9 Georgia,serif; letter-spacing:0; }
+    h2 { margin-bottom:0; font:400 clamp(2rem,4vw,3.4rem)/.95 Georgia,serif; }
+    h3 { margin:14px 0 6px; font:400 1.3rem Georgia,serif; }
+    .eyebrow, .panel-kicker { margin-bottom:14px; color:var(--mint); font-size:.72rem; font-weight:700; letter-spacing:.17em; text-transform:uppercase; }
+    .primary { display:inline-flex; align-items:center; justify-content:space-between; gap:20px; padding:13px 17px; color:var(--night); background:var(--mint); border:1px solid var(--mint); font-weight:700; }
+    .primary:hover { background:#b4f5cc; }
+    .primary span { font-size:1.2rem; }
+    .match-button { min-width:184px; }
+    .tabs { display:flex; gap:2px; margin-bottom:28px; border-bottom:1px solid var(--line); }
+    .tab { padding:14px 18px; color:var(--muted); background:transparent; border:0; border-bottom:2px solid transparent; text-transform:capitalize; }
+    .tab:hover, .tab.active { color:var(--mint); border-bottom-color:var(--mint); }
+    .content { min-height:420px; }
+    .ratings { display:flex; gap:18px; color:var(--muted); font-size:.72rem; letter-spacing:.1em; }
+    .ratings b { display:block; margin-top:5px; color:var(--ink); font-size:1.3rem; letter-spacing:0; }
+    .table-wrap { overflow-x:auto; border:1px solid var(--line); background:rgba(13,41,33,.7); }
+    table { width:100%; border-collapse:collapse; min-width:680px; }
+    th { color:var(--muted); font-size:.68rem; font-weight:700; letter-spacing:.11em; text-align:left; text-transform:uppercase; }
+    th, td { padding:15px 17px; border-bottom:1px solid var(--line); text-align:left; }
+    tr:last-child td { border-bottom:0; }
+    tr.highlight td { color:var(--mint); background:rgba(142,230,178,.08); }
+    .position { display:inline-block; min-width:38px; padding:5px 7px; color:var(--mint); border:1px solid rgba(142,230,178,.35); font-size:.7rem; text-align:center; }
+    .small { padding:7px 10px; border:1px solid var(--line); font-size:.75rem; }
+    .small.primary { color:var(--night); border-color:var(--mint); }
+    .danger { color:var(--danger); background:transparent; border-color:rgba(238,128,109,.4); }
+    .muted { color:var(--muted); font-size:.85rem; }
+    .market-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+    .player-card { padding:20px; border:1px solid var(--line); background:rgba(13,41,33,.76); }
+    .player-top { display:flex; justify-content:space-between; align-items:center; }
+    .player-card p { margin-bottom:18px; color:var(--muted); font-size:.82rem; }
+    .player-card > strong { display:block; margin-bottom:18px; color:var(--mint); }
+    .fixture-list { border-top:1px solid var(--line); }
+    .fixture-row { display:grid; grid-template-columns:90px 1fr 80px 1fr 90px; align-items:center; gap:18px; padding:18px 12px; border-bottom:1px solid var(--line); color:var(--muted); }
+    .fixture-row strong { color:var(--ink); }
+    .fixture-row b { color:var(--mint); text-align:center; }
+    .fixture-row small { font-size:.65rem; letter-spacing:.08em; text-align:right; }
+    .fixture-row.next { background:rgba(142,230,178,.08); }
+    .start-screen { width:min(1050px,calc(100% - 48px)); min-height:100vh; margin:auto; display:grid; grid-template-columns:1.2fr .8fr; align-items:center; gap:9vw; padding:64px 0; }
+    .start-copy h1 { font-size:clamp(4rem,9vw,8.5rem); }
+    .start-copy h1 em { color:var(--mint); font-style:normal; }
+    .intro { max-width:470px; margin:35px 0 0; color:var(--muted); font:1.12rem/1.55 Georgia,serif; }
+    .start-panel { padding:30px; border:1px solid var(--line); background:rgba(13,41,33,.82); box-shadow:18px 18px 0 rgba(142,230,178,.07); }
+    label { display:block; margin:20px 0; color:var(--muted); font-size:.78rem; text-transform:uppercase; letter-spacing:.1em; }
+    input, select { display:block; width:100%; margin-top:8px; padding:13px; color:var(--ink); background:var(--night); border:1px solid var(--line); outline:0; }
+    input:focus, select:focus { border-color:var(--mint); }
+    .start-panel .primary, .start-panel .secondary { width:100%; margin-top:10px; }
+    .fine-print { margin:24px 0 0; color:var(--muted); font-size:.73rem; line-height:1.5; }
+    #toast { position:fixed; right:24px; bottom:24px; max-width:320px; padding:14px 18px; color:var(--night); background:var(--mint); font-size:.85rem; box-shadow:8px 8px 0 rgba(0,0,0,.2); }
+    #toast[data-tone="bad"] { color:var(--ink); background:var(--danger); }
+    #toast[data-tone="warn"] { color:var(--night); background:#f0c878; }
+    @media (max-width:720px) {
+      .topbar { flex-wrap:wrap; gap:14px; }
+      .manager { order:3; flex-basis:100%; }
+      .header-actions { margin-left:auto; }
+      .budget { display:none; }
+      .game-shell, .start-screen { width:calc(100% - 32px); padding-top:42px; }
+      .game-heading, .section-head { align-items:flex-start; flex-direction:column; }
+      .match-button { width:100%; }
+      .tabs { overflow-x:auto; }
+      .tab { white-space:nowrap; }
+      .start-screen { grid-template-columns:1fr; align-content:center; gap:42px; }
+      .start-copy h1 { font-size:clamp(3.8rem,18vw,6rem); }
+      .fixture-row { grid-template-columns:66px 1fr 52px; gap:8px; font-size:.8rem; }
+      .fixture-row strong:nth-of-type(2), .fixture-row small { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="game.js"></script>
+</body>
+</html>
