@@ -15,6 +15,7 @@ RUN pdm install --check --prod --no-editable
 
 # Copy the rest of your application code
 COPY app.py main.py ./
+COPY index.html ./
 COPY resources/ resources/
 
 

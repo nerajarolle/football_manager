@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#071a16" />
+    <title>Football Manager</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #eef7f1;
+        --muted: #a7b9af;
+        --mint: #8ee6b2;
+        --night: #071a16;
+        --line: rgba(238, 247, 241, 0.16);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          linear-gradient(115deg, rgba(7, 26, 22, 0.96), rgba(12, 51, 40, 0.78)),
+          repeating-linear-gradient(90deg, transparent 0 78px, rgba(142, 230, 178, 0.08) 79px 80px),
+          var(--night);
+      }
+
+      main {
+        width: min(1120px, calc(100% - 48px));
+        min-height: 100vh;
+        margin: 0 auto;
+        display: grid;
+        align-content: center;
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        gap: 7vw;
+        padding: 64px 0;
+      }
+
+      .eyebrow {
+        margin: 0 0 22px;
+        color: var(--mint);
+        font: 700 0.78rem/1.2 Arial, sans-serif;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 700px;
+        margin: 0;
+        font-size: clamp(3.8rem, 9vw, 8.4rem);
+        line-height: 0.86;
+        letter-spacing: 0;
+      }
+
+      .lede {
+        max-width: 500px;
+        margin: 34px 0 38px;
+        color: var(--muted);
+        font-size: 1.2rem;
+        line-height: 1.55;
+      }
+
+      .enter {
+        display: inline-flex;
+        align-items: center;
+        gap: 18px;
+        padding: 16px 22px;
+        color: var(--night);
+        background: var(--mint);
+        border: 1px solid var(--mint);
+        font: 700 0.92rem Arial, sans-serif;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      .enter:hover { transform: translateY(-3px); background: #b4f5cc; }
+      .arrow { font-size: 1.4rem; line-height: 0; }
+
+      .match-card {
+        position: relative;
+        padding: 28px;
+        border: 1px solid var(--line);
+        background: rgba(4, 19, 15, 0.48);
+        box-shadow: 18px 18px 0 rgba(142, 230, 178, 0.08);
+      }
+
+      .match-card::before {
+        content: "";
+        position: absolute;
+        inset: 16px;
+        border: 1px solid rgba(142, 230, 178, 0.2);
+        pointer-events: none;
+      }
+
+      .card-label { margin: 0 0 50px; color: var(--muted); font: 0.75rem Arial, sans-serif; letter-spacing: 0.12em; text-transform: uppercase; }
+      .score { margin: 0; font-size: clamp(3rem, 8vw, 5.4rem); line-height: 1; }
+      .fixture { display: flex; justify-content: space-between; gap: 16px; margin-top: 14px; color: var(--muted); font: 0.82rem Arial, sans-serif; }
+      .fixture span:last-child { color: var(--mint); }
+
+      @media (max-width: 720px) {
+        main { width: min(100% - 36px, 560px); grid-template-columns: 1fr; gap: 56px; padding: 42px 0; }
+        h1 { font-size: clamp(3.7rem, 18vw, 6rem); }
+        .match-card { max-width: 360px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section>
+        <p class="eyebrow">The touchline is yours</p>
+        <h1>Build the club they remember.</h1>
+        <p class="lede">Shape a squad, make the hard calls in the transfer market, and turn a season of fixtures into your story.</p>
+        <a class="enter" href="/game/">Enter the dugout <span class="arrow" aria-hidden="true">&#8599;</span></a>
+      </section>
+      <aside class="match-card" aria-label="Season preview">
+        <p class="card-label">Season preview / 01</p>
+        <p class="score">90'</p>
+        <div class="fixture"><span>Every decision counts</span><span>PLAY ON</span></div>
+      </aside>
+    </main>
+  </body>
+</html>
