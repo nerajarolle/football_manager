@@ -116,13 +116,20 @@ def get_other_teams(teams: dict) -> list[Team]:
 
 def get_transfer_buyers(teams: dict[str, Team], seller_name: str, player: Player) -> list[Team]:
     minimum_offer = int(player.value * 85 / 100)
-    return [
+    buyers = [
         team
         for team in teams.values()
         if team.name != seller_name
         and team.budget >= minimum_offer
         and abs(team.overall - player.overall) <= 5
     ]
+    if buyers:
+        return buyers
+    return [
+        team
+        for team in teams.values()
+        if team.name != seller_name and team.budget >= minimum_offer
+    ][:1]
 
 
 def get_transfer_offer(buyer: Team, player: Player) -> tuple[int, int]:
