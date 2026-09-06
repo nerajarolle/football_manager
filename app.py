@@ -1,7 +1,10 @@
 import asyncio
 import os
+from pathlib import Path
 from secrets import choice
-
+import uvicorn
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from nicegui import ui
 from resources.game_storage import load_from_browser, save_to_browser
 from resources.data import GameState
@@ -25,18 +28,27 @@ from resources.variables import (
 CLASS_FULL_MB4 = "w-full mb-4"
 
 state = GameState()
+GAME_PATH = "/game"
+INDEX_FILE = Path(__file__).with_name("index.html")
+
+fastapi_app = FastAPI(title="Football Manager")
+
+
+@fastapi_app.get("/", include_in_schema=False)
+async def landing_page() -> FileResponse:
+    return FileResponse(INDEX_FILE, media_type="text/html")
 
 
 def handle_load_game():
     load_ok = load_from_browser(state)
     if load_ok:
         ui.notify("Game loaded successfully!", type="positive")
-        ui.navigate.to("/dashboard")
+        ui.navigate.to(f"{GAME_PATH}/dashboard")
     else:
         ui.notify("No saved game found.", type="negative")
 
 
-@ui.page("/")
+@ui.page(f"{GAME_PATH}/")
 def main_menu():
     ui.dark_mode().enable()
     ui.add_head_html("<style>body { background-color: #0f172a; color: white; }</style>")
@@ -88,7 +100,7 @@ def main_menu():
                     ui.notify("Please provide a valid team name", type="negative")
                     return
                 state.init_season(tname)
-                ui.navigate.to("/dashboard")
+                ui.navigate.to(f"{GAME_PATH}/dashboard")
 
             ui.button("Start New Career", on_click=start_new_game).classes(
                 "w-full bg-emerald-600 hover:bg-emerald-500 font-bold mb-2"
@@ -98,7 +110,7 @@ def main_menu():
             )
 
 
-@ui.page("/play")
+@ui.page(f"{GAME_PATH}/play")
 def play_next_match():
     print(
         f"Current fixture index: {state.current_fixture_idx}, Total rounds: {state.rounds}"
@@ -268,7 +280,7 @@ def play_next_match():
 
             def navigate_to_dashboard():
                 match_dialog.close()
-                ui.navigate.to("/dashboard")
+                ui.navigate.to(f"{GAME_PATH}/dashboard")
 
             close_button.on_click(navigate_to_dashboard)
 
@@ -281,13 +293,13 @@ def play_next_match():
         ui.notify("The season has ended!", type="info")
 
 
-@ui.page("/dashboard")
+@ui.page(f"{GAME_PATH}/dashboard")
 def dashboard():
     ui.dark_mode().enable()
     ui.add_head_html("<style>body { background-color: #0f172a; color: white; }</style>")
 
     if not state.team_name:
-        ui.navigate.to("/")
+        ui.navigate.to(GAME_PATH)
         return
 
     # Tabs container
@@ -317,7 +329,7 @@ def dashboard():
                 ):
                     ui.label("Options").classes("text-white font-semibold")
                     ui.item("Save Game", on_click=lambda x: save_to_browser(state))
-                    ui.item("Quit", on_click=lambda: ui.navigate.to("/"))
+                    ui.item("Quit", on_click=lambda: ui.navigate.to(GAME_PATH))
                 # ui.button(
                 #     "Save Game", on_click=lambda x: save_to_browser(state)
                 # ).classes("bg-blue-600 hover:bg-blue-500")
@@ -686,7 +698,15 @@ def dashboard():
                 refresh_standings()
 
 def main(port: int = 8000, reload=True):
-    ui.run(title="Football", port=port, reload=reload, storage_secret="alex-storage")
+    ui.run_with(
+        fastapi_app,
+        title="Football Manager",
+        mount_path="/",
+        storage_secret="alex-storage",
+    )
+    if "PYTEST_CURRENT_TEST" not in os.environ:
+        server_target = "app:fastapi_app" if reload else fastapi_app
+        uvicorn.run(server_target, port=port, reload=reload)
 
 if __name__ in {"__main__", "__mp_main__"}:
     main()

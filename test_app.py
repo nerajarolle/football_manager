@@ -1,15 +1,23 @@
 import pytest
 from nicegui import ui
 from nicegui.testing import User
+from app import INDEX_FILE, landing_page
 from resources.data import GameState
 from resources.helpers import update_fixture_stats
 
+
+async def test_landing_page_uses_index_file():
+    response = await landing_page()
+
+    assert response.path == INDEX_FILE
+    assert INDEX_FILE.is_file()
+
+
 async def _go_to_dashboard(user: User):
-    await user.open('/')
+    await user.open('/game/')
     await user.should_see('⚽ ULTIMATE FOOTBALL MANAGER')
     user.find('Start New Career').click()
     await user.should_see('Your Squad')
-    
 
 async def test_start_new_game(user: User) -> None:
     await _go_to_dashboard(user)

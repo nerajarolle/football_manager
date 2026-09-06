@@ -6,19 +6,6 @@ from resources.objects import Fixture, Player, Team
 from resources.variables import LOGO_COLORS
 
 
-# def generate_team_squad() -> list[Player]:
-#     squad = []
-#     # 2 GKs, 6 DEFs, 6 MIDs, 4 ATTs = 18 players
-#     for _ in range(3):
-#         squad.append(Player("GK"))
-#     for _ in range(6):
-#         squad.append(Player("DEF"))
-#     for _ in range(6):
-#         squad.append(Player("MID"))
-#     for _ in range(4):
-#         squad.append(Player("ATT"))
-#     return squad
-
 def get_chance_for_event(fixture: Fixture) -> str:
     #print(f"Simulating event for fixture: {fixture.home.name} vs {fixture.away.name}")
     overall1 = fixture.home.overall
@@ -217,65 +204,9 @@ def update_fixture_stats(fixture: Fixture, teams: dict[str, Team]) -> None:
         else:
             team_data.draws += 1
             team_data.points += 1
-# def simulate_match(fixture):
-#     # Simulate match logic here
-#     fixture.home_score = randint(0, 5)
-#     fixture.away_score = randint(0, 5)
-#     fixture.home_scorers = [get_scorer(fixture.home).name for _ in range(fixture.home_score)]
-#     fixture.away_scorers = [get_scorer(fixture.away).name for _ in range(fixture.away_score)]
-#     fixture.played = True
-
-
-# def normalize_player(raw: dict) -> dict:
-#     if not isinstance(raw, dict):
-#         return raw
-#     normalized = dict(raw)
-#     scores = {
-#         "physical": normalized.get("physical", randint(52, 84)),
-#         "mental": normalized.get("mental", randint(50, 86)),
-#         "shooting": normalized.get("shooting", randint(35, 90)),
-#         "passing": normalized.get("passing", randint(35, 90)),
-#         "dribbling": normalized.get("dribbling", randint(35, 92)),
-#         "stamina": normalized.get("stamina", randint(45, 92)),
-#         "tackle": normalized.get("tackle", randint(30, 90)),
-#         "speed": normalized.get("speed", randint(40, 94)),
-#         "vision": normalized.get("vision", randint(35, 90)),
-#         "crossing": normalized.get("crossing", randint(35, 90)),
-#         "positioning": normalized.get("positioning", randint(35, 90)),
-#         "marking": normalized.get("marking", randint(30, 90)),
-#         "reflexes": normalized.get("reflexes", randint(35, 90)),
-#         "handling": normalized.get("handling", randint(35, 90)),
-#         "strength": normalized.get("strength", randint(35, 90)),
-#     }
-#     for key, value in scores.items():
-#         normalized[key] = value
-#     stats = dict(normalized.get("stats") or {})
-#     normalized["stats"] = {
-#         "appearances": int(stats.get("appearances", 0)),
-#         "goals": int(stats.get("goals", 0)),
-#         "assists": int(stats.get("assists", 0)),
-#         "form": float(stats.get("form", 6.5)),
-#     }
-#     normalized["overall"] = int(normalized.get("overall") or recalculate_player_overall(normalized))
-#     normalized["potential"] = int(normalized.get("potential", randint(55, 92)))
-#     normalized["value"] = int(normalized.get("value", randint(8, 28) * 100000))
-#     normalized["wage"] = int(normalized.get("wage", randint(12, 45) * 1000))
-#     normalized.setdefault("id", str(uuid4()))
-#     normalized.setdefault("name", "Player")
-#     normalized.setdefault("position", choice(POSITIONS))
-#     normalized.setdefault("age", randint(18, 32))
-#     return normalized
 
 def make_logo(team: str, index: int) -> dict[str, str]:
     words = [word for word in team.split() if word]
     initials = "".join(word[0] for word in words[:2]).upper() or team[:2].upper()
     primary, accent = LOGO_COLORS[index % len(LOGO_COLORS)]
     return {"initials": initials, "primary": primary, "accent": accent}
-
-
-# def make_team_logos(team_name: str) -> dict[str, dict[str, str]]:
-#     return {
-#         team: make_logo(team, index)
-#         for index, team in enumerate([team_name, *OPPONENTS])
-#     }
-
