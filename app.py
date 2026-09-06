@@ -140,22 +140,33 @@ def play_next_match():
     fixture = this_round_team_fixture[0]
     other_fixtures = [f for f in this_round_fixtures if f != fixture]
 
-    with ui.dialog().classes("full-width") as match_dialog, ui.card().style('width: 800px; max-width: none;'):
-        with ui.column(align_items="stretch").classes("full-width p-4 bg-slate-900 rounded-lg"):
+    with (
+        ui.dialog().classes("full-width") as match_dialog,
+        ui.card().style("width: 800px; max-width: none;"),
+    ):
+        with ui.column(align_items="stretch").classes(
+            "full-width p-4 bg-slate-900 rounded-lg"
+        ):
             ui.label(f"Round: {fixture.round + 1}").classes(
                 "text-gray-400 text-center mb-4"
             )
-            with ui.row(align_items="stretch").classes("w-full justify-between items-center no-wrap"):
+            with ui.row(align_items="stretch").classes(
+                "w-full justify-between items-center no-wrap"
+            ):
 
                 ui.label(f"{fixture.home.name}").classes(
                     "col-5 text-2xl font-bold text-emerald-400 mb-2 text-center"
                 )
-                score_home = ui.label("0").classes(
-                    "col-1 text-4xl font-bold text-center my-2"
-                ).props("data-home='score-home'")
-                score_away = ui.label("0").classes(
-                    "col-1 text-4xl font-bold text-center my-2"
-                ).props("data-away='score-away'")
+                score_home = (
+                    ui.label("0")
+                    .classes("col-1 text-4xl font-bold text-center my-2")
+                    .props("data-home='score-home'")
+                )
+                score_away = (
+                    ui.label("0")
+                    .classes("col-1 text-4xl font-bold text-center my-2")
+                    .props("data-away='score-away'")
+                )
                 ui.label(f"{fixture.away.name}").classes(
                     "col-5 text-2xl font-bold text-emerald-400 mb-2 text-center"
                 )
@@ -163,29 +174,22 @@ def play_next_match():
             with ui.row().classes("w-full no-wrap") as scorers_row:
                 with ui.column().classes("w-full"):
                     for scorer in fixture.home_scorers:
-                        ui.label(f"⚽ {scorer}").classes(
-                            "text-sm text-gray-400"
-                        )
+                        ui.label(f"⚽ {scorer}").classes("text-sm text-gray-400")
                 with ui.column().classes("w-full"):
                     for scorer in fixture.away_scorers:
-                        ui.label(f"⚽ {scorer}").classes(
-                            "text-sm text-gray-400"
-                        )
+                        ui.label(f"⚽ {scorer}").classes("text-sm text-gray-400")
 
             def update_scorers(fix: Fixture):
                 scorers_row.clear()
                 with scorers_row:
                     with ui.column(align_items="start").classes("col-5"):
                         for scorer in fix.home_scorers:
-                            ui.label(f"⚽ {scorer}").classes(
-                                "text-sm text-gray-400"
-                            )
+                            ui.label(f"⚽ {scorer}").classes("text-sm text-gray-400")
                     ui.column().classes("col-2")
                     with ui.column(align_items="start").classes("col-5"):
                         for scorer in fix.away_scorers:
-                            ui.label(f"⚽ {scorer}").classes(
-                                "text-sm text-gray-400"
-                            )
+                            ui.label(f"⚽ {scorer}").classes("text-sm text-gray-400")
+
             # Progress bar for match simulation
             progress_bar = ui.linear_progress(show_value=False).classes("w-full")
             minutes_label = ui.label("0/90 minutes").classes(
@@ -200,12 +204,13 @@ def play_next_match():
                 start_button = ui.button("Start Match").classes(
                     "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
                 )
-                simulate_button = ui.button("Simulate", on_click=lambda _, f=fixture: handle_simulate_button(f)).classes("w-full bg-green-600 hover:bg-green-500 text-white font-bold")
+                simulate_button = ui.button(
+                    "Simulate", on_click=lambda _, f=fixture: handle_simulate_button(f)
+                ).classes("w-full bg-green-600 hover:bg-green-500 text-white font-bold")
                 close_button = ui.button("Continue").classes(
                     "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold"
                 )
             close_button.enabled = False
-
 
             def simulate_minute(fix: Fixture):
                 msg = get_chance_for_event(fix)
@@ -221,7 +226,7 @@ def play_next_match():
                 update_fixture_stats(fix, state.teams)
                 fix.played = True
                 update_scorers(fix)
-            
+
             def simulate_match(fix: Fixture, display_result: bool = True):
                 for _minute in range(1, 91):
                     msg = get_chance_for_event(fix)
@@ -235,14 +240,12 @@ def play_next_match():
                     close_button.enable()
                     start_button.disable()
                     simulate_button.disable()
-                
-            
+
             def handle_simulate_button(fix):
                 simulate_match(fix)
                 update_all_fixture_stats(fix)
                 play_other_fixtures()
-            
-            
+
             async def run_match():
                 start_button.enabled = False
 
@@ -397,16 +400,12 @@ def dashboard():
                                 )
                             elif requested_price <= maximum_offer:
                                 sale_offer["value"] = requested_price
-                                offer_label.text = (
-                                    f"They agree to €{requested_price:,}. Accept to complete the sale."
-                                )
+                                offer_label.text = f"They agree to €{requested_price:,}. Accept to complete the sale."
                                 price_input.value = requested_price
                                 price_input.max = requested_price
                             else:
                                 sale_offer["value"] = maximum_offer
-                                offer_label.text = (
-                                    f"They counter with €{maximum_offer:,}. Accept to complete the sale."
-                                )
+                                offer_label.text = f"They counter with €{maximum_offer:,}. Accept to complete the sale."
                                 price_input.value = maximum_offer
 
                         ui.button("Negotiate", on_click=negotiate).props(
@@ -427,14 +426,18 @@ def dashboard():
                 return
             player_id = e.args.get("id")
             player = next(
-                (candidate for candidate in state.team.players if candidate.id == player_id),
+                (
+                    candidate
+                    for candidate in state.team.players
+                    if candidate.id == player_id
+                ),
                 None,
             )
             if player is None:
                 ui.notify("Player not found.", type="negative")
                 return
             simulate_offer_from_other_team(player)
-        
+
         with ui.tab_panels(tabs, value=t_squad).classes(
             "w-full bg-slate-900 text-white p-4 rounded-xl border border-slate-700"
         ):
@@ -455,17 +458,23 @@ def dashboard():
                         "team",
                         backward=lambda t: f"Budget: €{t.budget:,}",
                     ).classes("text-lg font-semibold text-amber-400")
-                    squad_table = ui.table(
-                        columns=TEAM_SQUAD_PANEL_PLAYER_TABLE_COLUMNS,
-                        rows=[],
-                        row_key="id",
-                    ).classes("w-full bg-slate-800 text-white").props('data="squadTable"')
-                    
-                    with squad_table.add_slot('body-cell-action'):
-                        with squad_table.cell('action'):
-                            ui.button('Sell', color="white", icon="euro").classes("bg-red").props('flat').on(
-                                'click',
-                                js_handler='() => emit(props.row)',
+                    squad_table = (
+                        ui.table(
+                            columns=TEAM_SQUAD_PANEL_PLAYER_TABLE_COLUMNS,
+                            rows=[],
+                            row_key="id",
+                        )
+                        .classes("w-full bg-slate-800 text-white")
+                        .props('data="squadTable"')
+                    )
+
+                    with squad_table.add_slot("body-cell-action"):
+                        with squad_table.cell("action"):
+                            ui.button("Sell", color="white", icon="euro").classes(
+                                "bg-red"
+                            ).props("flat").on(
+                                "click",
+                                js_handler="() => emit(props.row)",
                                 handler=lambda e: handle_player_sale(e),
                             )
                     # squad_table.add_slot(
@@ -504,12 +513,16 @@ def dashboard():
                     player: Player, owner: Team | None, price: int, dialog
                 ):
                     if state.team is None or state.budget < price:
-                        ui.notify("Not enough budget for this transfer.", type="negative")
+                        ui.notify(
+                            "Not enough budget for this transfer.", type="negative"
+                        )
                         return
                     if not complete_market_purchase(
                         state.team, owner, state.transfer_list, player, price
                     ):
-                        ui.notify("That player is no longer available.", type="negative")
+                        ui.notify(
+                            "That player is no longer available.", type="negative"
+                        )
                         dialog.close()
                         return
                     state.budget -= price
@@ -529,7 +542,9 @@ def dashboard():
                     with ui.dialog() as dialog:
                         with ui.card().classes("w-96 bg-slate-800 text-white"):
                             ui.label("Player purchase").classes("text-xl font-bold")
-                            owner_name = owner.name if owner is not None else "Free agent"
+                            owner_name = (
+                                owner.name if owner is not None else "Free agent"
+                            )
                             ui.label(
                                 f"{player.name} ({player.position}) - {owner_name}"
                             ).classes("text-gray-300")
@@ -548,18 +563,15 @@ def dashboard():
                                     "text-emerald-300"
                                 )
                             else:
+
                                 def negotiate_purchase():
                                     requested_price = int(price_input.value or 0)
                                     if requested_price < minimum_price:
-                                        offer_label.text = (
-                                            f"The lowest accepted price is €{minimum_price:,}."
-                                        )
+                                        offer_label.text = f"The lowest accepted price is €{minimum_price:,}."
                                         price_input.value = minimum_price
                                         return
                                     purchase_price["value"] = requested_price
-                                    offer_label.text = (
-                                        f"They agree to €{requested_price:,}. Buy to complete the transfer."
-                                    )
+                                    offer_label.text = f"They agree to €{requested_price:,}. Buy to complete the transfer."
                                     price_input.max = requested_price
 
                                 ui.button(
@@ -603,7 +615,9 @@ def dashboard():
                                     )
                                     ui.button(
                                         "Buy",
-                                        on_click=lambda x, p=player, o=owner: open_purchase_dialog(p, o),
+                                        on_click=lambda x, p=player, o=owner: open_purchase_dialog(
+                                            p, o
+                                        ),
                                     ).classes(
                                         "bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
                                     )
@@ -697,6 +711,7 @@ def dashboard():
 
                 refresh_standings()
 
+
 def main(port: int = 8000, reload=True):
     ui.run_with(
         fastapi_app,
@@ -706,7 +721,8 @@ def main(port: int = 8000, reload=True):
     )
     if "PYTEST_CURRENT_TEST" not in os.environ:
         server_target = "app:fastapi_app" if reload else fastapi_app
-        uvicorn.run(server_target, port=port, reload=reload)
+        uvicorn.run(server_target, host="0.0.0.0", port=port, reload=reload)
+
 
 if __name__ in {"__main__", "__mp_main__"}:
     main()
